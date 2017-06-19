@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/a_act_edit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.botxgames.sdule.activities.AActEdit">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/a_act_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New"
+            android:layout_gravity="top|start"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="6dp"
+            android:textSize="24sp"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
+
+            <TextView
+                android:id="@+id/a_act_edit_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="112dp"
+                android:text="12:00"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/a_act_edit_time_am"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="36dp"
+                android:text="am"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activity"/>
+
+        <EditText
+            android:id="@+id/a_act_edit_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="Some Activity"
+            android:textSize="36sp"
+            android:maxLength="20"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="18dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
+
+            <Button
+                android:id="@+id/a_act_edit_day_0"
+                android:text="M"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:onClick="onDayToggle"
+                android:tag="0"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_1"
+                android:text="T"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="1"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_2"
+                android:text="W"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="2"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_3"
+                android:text="T"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="3"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_4"
+                android:text="F"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="4"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_5"
+                android:text="S"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="5"/>
+
+            <Button
+                android:id="@+id/a_act_edit_day_6"
+                android:text="S"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle"
+                android:layout_marginStart="10dp"
+                android:onClick="onDayToggle"
+                android:tag="6"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="28dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:src="@drawable/alarm"
+                android:layout_marginEnd="12dp"
+                android:tint="@color/colorAccent"/>
+
+            <Switch
+                android:text="Remind me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/a_act_edit_remind"
+                android:textSize="32dp"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/a_act_edit_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="12dp"
+        android:text="add"
+        android:textSize="32sp"
+        android:textColor="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/a_act_edit_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="12dp"
+        android:text="cancel"
+        android:textSize="32sp"
+        android:textColor="@color/colorRed"/>
+
+</android.support.design.widget.CoordinatorLayout>
