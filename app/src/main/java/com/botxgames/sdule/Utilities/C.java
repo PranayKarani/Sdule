@@ -12,6 +12,7 @@ public class C {
 	public static final String sp24FORMAT = "format_24";
 	public static final String spREMINDER = "remind_before";
 	public static final String spVIBRATE = "vibrate";
+	public static final String spNEXTDAY = "next_day";
 
 	public static int getMyColor(Context context, int color) {
 		return ContextCompat.getColor(context, color);

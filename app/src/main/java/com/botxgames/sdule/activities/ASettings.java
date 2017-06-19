@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 public class ASettings extends MyBaseActivity implements View.OnClickListener{
 
-	private Switch switch24, vibrateSwitch;
+	private Switch switch24, vibrateSwitch, nextdaySwitch;
 	private Typeface typeface;
 	private TextView reminderValue;
 
@@ -49,6 +49,10 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		switch24.setOnClickListener(this);
 		switch24.setTypeface(typeface);
 
+		nextdaySwitch = (Switch) findViewById(R.id.a_settings_nextday);
+		nextdaySwitch.setChecked(Setting.showTomo);
+		nextdaySwitch.setOnClickListener(this);
+		nextdaySwitch.setTypeface(typeface);
 
 		final TextView reminderHeader = (TextView) findViewById(R.id.a_settings_reminder_heading);
 		reminderHeader.setTypeface(typeface);
@@ -121,6 +125,7 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		ShrPref.writeData(this, C.sp24FORMAT, Setting.timeFormat24);
 		ShrPref.writeData(this, C.spREMINDER, Setting.reminder_before);
 		ShrPref.writeData(this, C.spVIBRATE, Setting.vibrate);
+		ShrPref.writeData(this, C.spNEXTDAY, Setting.showTomo);
 
 	}
 
@@ -135,6 +140,11 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		if (v == vibrateSwitch) {
 			Setting.vibrate = !Setting.vibrate;
 			vibrateSwitch.setChecked(Setting.vibrate);
+		}
+
+		if (v == nextdaySwitch) {
+			Setting.showTomo = !Setting.showTomo;
+			nextdaySwitch.setChecked(Setting.showTomo);
 		}
 
 	}

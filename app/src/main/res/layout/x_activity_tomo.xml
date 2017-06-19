@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/x_time"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorAccentDim"
             android:textSize="18dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -27,7 +27,7 @@
             android:layout_height="12dp"
             android:layout_gravity="center"
             android:src="@drawable/alarm"
-            android:tint="@color/colorAccent"/>
+            android:tint="@color/colorAccentDim"/>
 
     </LinearLayout>
 
@@ -39,20 +39,12 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="24dp">
 
-        <ImageView
-            android:id="@+id/x_hour_glass"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:src="@drawable/clessidre"
-            android:layout_marginEnd="4dp"
-            android:tint="@color/colorAccent"/>
-
         <TextView
             android:id="@+id/x_text"
-            android:text="Bome Activity"
+            android:text="Some Activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhiteDim"
             android:textSize="36sp"/>
 
     </LinearLayout>

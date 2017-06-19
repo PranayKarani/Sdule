@@ -32,7 +32,7 @@ public class AMain extends AppCompatActivity {
 	private int highlightedActIndex = -1;
 	private TextView dayText;
 	private static int currentday = -1;
-
+	private LinearLayout todayActLayout, tomoActLayout, nextDayListLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,11 @@ public class AMain extends AppCompatActivity {
 		Setting.timeFormat24 = ShrPref.readData(this, C.sp24FORMAT, false);
 		Setting.reminder_before = ShrPref.readData(this, C.spREMINDER, 0);
 		Setting.vibrate = ShrPref.readData(this, C.spVIBRATE, true);
+		Setting.showTomo = ShrPref.readData(this, C.spNEXTDAY, true);
+
+		todayActLayout = (LinearLayout) findViewById(R.id.a_main_today_list_layout);
+		tomoActLayout = (LinearLayout) findViewById(R.id.a_main_nextday_layout);
+		nextDayListLayout = (LinearLayout) findViewById(R.id.a_main_nextday_list_layout);
 
 		typeface = Typeface.createFromAsset(getAssets(), Setting.font);
 
@@ -136,19 +141,82 @@ public class AMain extends AppCompatActivity {
 			}
 		}
 
+		// reset and setup today's stuff
+		fillActsInLayout(actsToday, todayActLayout, false);
+
 		// fill up acts for tomorrow if opted
-		if (Setting.showTomo) {
-
-			actsTomo = tAct.getActsForDay((currentday + 1)%7);
-
-
+		if (!Setting.showTomo) {
+			tomoActLayout.setVisibility(View.GONE);
+			return;
+		} else {
+			tomoActLayout.setVisibility(View.VISIBLE);
 		}
 
+		final int nextDay = (currentday + 1) % 7;
+		actsTomo = tAct.getActsForDay(nextDay);
 
-		final ListView lv = (ListView) findViewById(R.id.a_main_list);
-		lv.setAdapter(new MyAdapter(this, actsToday));
+		final TextView textView = (TextView) tomoActLayout.findViewById(R.id.a_main_nextday_text);
+		textView.setTypeface(typeface);
+		textView.setText(Time.getDayString(nextDay));
+
+		fillActsInLayout(actsTomo, nextDayListLayout, true);
+
+
+
 
 	}
+
+	private void fillActsInLayout(final Act[] acts, LinearLayout layout, boolean nextDay) {
+
+		layout.removeAllViews();
+
+		for (int i = 0; i < acts.length; i++) {
+
+			int layoutId;
+			if(nextDay){
+				layoutId = R.layout.x_activity_tomo;
+			} else {
+				layoutId = R.layout.x_activity;
+			}
+			final View view = getLayoutInflater().inflate(layoutId, null);
+
+			final Act act = acts[i];
+
+			final TextView timeText = (TextView) view.findViewById(R.id.x_time);
+			final TextView textText = (TextView) view.findViewById(R.id.x_text);
+			final ImageView alarmImg = (ImageView) view.findViewById(R.id.x_alarm);
+
+			timeText.setText(act.getTime().toString());
+			textText.setText(act.getText());
+
+			timeText.setTypeface(typeface);
+			textText.setTypeface(typeface);
+
+			if(!nextDay) {
+				final ImageView hourglassImg = (ImageView) view.findViewById(R.id.x_hour_glass);
+				hourglassImg.setVisibility(View.GONE);
+				if (highlightedActIndex == i) {
+					textText.setTextColor(C.getMyColor(AMain.this, R.color.colorAccent));
+					hourglassImg.setVisibility(View.VISIBLE);
+				}
+			}
+
+			alarmImg.setVisibility(act.isRemind() ? View.VISIBLE : View.GONE);
+
+			view.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					final Intent intent = new Intent(AMain.this, AActEdit.class);
+					intent.putExtra("act_id", act.getId());
+					AMain.this.startActivity(intent);
+				}
+			});
+
+			layout.addView(view);
+
+		}
+	}
+
 
 	@Override
 	public void onBackPressed() {
@@ -186,53 +254,6 @@ public class AMain extends AppCompatActivity {
 		noButton.setTypeface(typeface);
 
 
-	}
-
-	private class MyAdapter extends ArrayAdapter<Act> {
-
-		MyAdapter(Context context, Act[] objects) {
-			super(context, -1, objects);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-
-			final LayoutInflater inflater = AMain.this.getLayoutInflater();
-
-			final View view = inflater.inflate(R.layout.x_activity, parent, false);
-
-			final Act act = getItem(position);
-
-			final TextView timeText = (TextView) view.findViewById(R.id.x_time);
-			final TextView textText = (TextView) view.findViewById(R.id.x_text);
-			final ImageView alarmImg = (ImageView) view.findViewById(R.id.x_alarm);
-
-			timeText.setText(act.getTime().toString());
-			textText.setText(act.getText());
-
-			timeText.setTypeface(typeface);
-			textText.setTypeface(typeface);
-
-			final ImageView hourglassImg = (ImageView) view.findViewById(R.id.x_hour_glass);
-			hourglassImg.setVisibility(View.GONE);
-			if (highlightedActIndex == position) {
-				textText.setTextColor(C.getMyColor(AMain.this, R.color.colorAccent));
-				hourglassImg.setVisibility(View.VISIBLE);
-			}
-
-			alarmImg.setVisibility(act.isRemind() ? View.VISIBLE : View.GONE);
-
-			view.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					final Intent intent = new Intent(AMain.this, AActEdit.class);
-					intent.putExtra("act_id", act.getId());
-					AMain.this.startActivity(intent);
-				}
-			});
-
-			return view;
-		}
 	}
 
 	private class MyDaysListAdapter extends ArrayAdapter<String> {
