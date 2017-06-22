@@ -275,10 +275,18 @@ public class AActEdit extends MyBaseActivity implements View.OnClickListener, Vi
 
 		if (v == timeText) {
 
+
 			// Get Current Time
 			final Calendar c = Calendar.getInstance();
-			final int mHour = c.get(Calendar.HOUR_OF_DAY);
-			final int mMinute = c.get(Calendar.MINUTE);
+			int hr = c.get(Calendar.HOUR_OF_DAY);
+			int min = c.get(Calendar.MINUTE);
+
+			if (act != null) {
+
+				hr = act.getTime().getHour();
+				min = act.getTime().getMin();
+
+			}
 
 			// Launch Time Picker Dialog
 			TimePickerDialog timePickerDialog = new TimePickerDialog(this,
@@ -298,7 +306,7 @@ public class AActEdit extends MyBaseActivity implements View.OnClickListener, Vi
 								timeAmText.setText(timeString[1]);
 							}
 						}
-					}, mHour, mMinute, Setting.timeFormat24);
+					}, hr, min, Setting.timeFormat24);
 			timePickerDialog.show();
 		}
 	}
