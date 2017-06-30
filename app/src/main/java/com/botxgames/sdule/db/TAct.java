@@ -2,9 +2,14 @@
 
 package com.botxgames.sdule.db;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import com.botxgames.sdule.Utilities.TodayRmdrSetter;
+import com.botxgames.sdule.activities.ASettings;
 import com.botxgames.sdule.entities.Act;
 import com.botxgames.sdule.entities.Time;
 
@@ -53,6 +58,10 @@ public class TAct {
 	private String q_SELECT_ACTS_FOR_DAY(int day) {
 
 		return SELECT_FROM_TABLE + " WHERE act_" + day + " > 0 ORDER BY " + TIME + " ASC";
+	}
+
+	private String q_SELECT_ACTS_FOR_DAY_WITH_REMINDERS(int day){
+		return SELECT_FROM_TABLE + " WHERE act_" + day + " > 0 AND " + REMIND + " > 0 ORDER BY " + TIME + " ASC";
 	}
 
 
@@ -131,6 +140,25 @@ public class TAct {
 
 	}
 
+	public Act[] getActsForDayWithReminders(int day){
+
+
+		final Cursor c = dbHelper.select(q_SELECT_ACTS_FOR_DAY_WITH_REMINDERS(day), null);
+
+		final Act[] acts = new Act[c.getCount()];
+
+		while (c.moveToNext()) {
+
+			final int pos = c.getPosition();
+			acts[pos] = extractActFromCursor(c);
+
+		}
+
+		return acts;
+
+
+	}
+
 	public void update(Act act) {
 
 		final ContentValues cv = new ContentValues();
@@ -155,6 +183,22 @@ public class TAct {
 		dbHelper.delete(TABLE_NAME, ID + " = ?", new String[]{
 				String.valueOf(actId)
 		});
+
+		// resdule the today's reminders if an activity is deleted33
+		final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		final Intent intent = new Intent(context, TodayRmdrSetter.class);
+		final PendingIntent pendingIntent = PendingIntent.getBroadcast(
+				context,
+				0,
+				intent,
+				PendingIntent.FLAG_ONE_SHOT);
+
+		alarmManager.cancel(pendingIntent);
+		alarmManager.setExact(
+				AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis() + 50,
+				pendingIntent
+		);
 
 	}
 }

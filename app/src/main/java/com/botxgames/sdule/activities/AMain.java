@@ -1,29 +1,29 @@
 package com.botxgames.sdule.activities;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
 import com.botxgames.sdule.R;
-import com.botxgames.sdule.Utilities.C;
-import com.botxgames.sdule.Utilities.Setting;
-import com.botxgames.sdule.Utilities.ShrPref;
+import com.botxgames.sdule.Utilities.*;
 import com.botxgames.sdule.db.TAct;
 import com.botxgames.sdule.entities.Act;
 import com.botxgames.sdule.entities.Time;
-import org.w3c.dom.Text;
+
+import java.util.Calendar;
 
 public class AMain extends AppCompatActivity {
 
@@ -39,10 +39,13 @@ public class AMain extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.a_main);
 
+		setTodaysReminders();
+
 		Setting.timeFormat24 = ShrPref.readData(this, C.sp24FORMAT, false);
 		Setting.reminder_before = ShrPref.readData(this, C.spREMINDER, 0);
 		Setting.vibrate = ShrPref.readData(this, C.spVIBRATE, true);
 		Setting.showTomo = ShrPref.readData(this, C.spNEXTDAY, true);
+		Setting.showHourGlass = ShrPref.readData(this, C.spHOURGLASS, true);
 
 		todayActLayout = (LinearLayout) findViewById(R.id.a_main_today_list_layout);
 		tomoActLayout = (LinearLayout) findViewById(R.id.a_main_nextday_layout);
@@ -191,13 +194,15 @@ public class AMain extends AppCompatActivity {
 
 			timeText.setTypeface(typeface);
 			textText.setTypeface(typeface);
+			textText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
 
 			if(!nextDay) {
 				final ImageView hourglassImg = (ImageView) view.findViewById(R.id.x_hour_glass);
 				hourglassImg.setVisibility(View.GONE);
 				if (highlightedActIndex == i) {
 					textText.setTextColor(C.getMyColor(AMain.this, R.color.colorAccent));
-					hourglassImg.setVisibility(View.VISIBLE);
+					textText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 56);
+					if(Setting.showHourGlass) hourglassImg.setVisibility(View.VISIBLE);
 				}
 			}
 
@@ -304,5 +309,28 @@ public class AMain extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Called whenever the app is launched
+	 */
+	private void setTodaysReminders(){
+
+		final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		final Intent intent = new Intent(this, NextdayRmdrSetter.class);
+		final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 5);
+
+		alarmManager.cancel(pendingIntent);
+		alarmManager.setExact(
+				AlarmManager.RTC_WAKEUP,
+				calendar.getTimeInMillis(),
+				pendingIntent
+		);
+
+	}
 
 }

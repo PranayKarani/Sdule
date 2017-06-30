@@ -1,29 +1,28 @@
 package com.botxgames.sdule.activities;
 
-import android.app.*;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.botxgames.sdule.R;
-import com.botxgames.sdule.Utilities.AlarmReciever;
 import com.botxgames.sdule.Utilities.C;
+import com.botxgames.sdule.Utilities.NextdayRmdrSetter;
 import com.botxgames.sdule.Utilities.Setting;
+import com.botxgames.sdule.Utilities.TodayRmdrSetter;
 import com.botxgames.sdule.db.TAct;
 import com.botxgames.sdule.entities.Act;
 import com.botxgames.sdule.entities.Time;
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
-import java.util.Set;
 
 public class AActEdit extends MyBaseActivity implements View.OnClickListener, View.OnLongClickListener {
 
@@ -35,7 +34,6 @@ public class AActEdit extends MyBaseActivity implements View.OnClickListener, Vi
 	private Button monB, tueB, wedB, thrB, friB, satB, sunB;
 
 	private Act act;
-	private AlarmManager am;
 
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
@@ -47,7 +45,6 @@ public class AActEdit extends MyBaseActivity implements View.OnClickListener, Vi
 		actId = getIntent().getIntExtra("act_id", -190);
 
 		final Typeface typeface = Typeface.createFromAsset(getAssets(), Setting.font);
-		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 		final TextView titleText = (TextView) findViewById(R.id.a_act_edit_text);
 		titleText.setTypeface(typeface);
@@ -238,36 +235,18 @@ public class AActEdit extends MyBaseActivity implements View.OnClickListener, Vi
 
 	private void setReminder() {
 
-		final Intent intent = new Intent(AActEdit.this, AlarmReciever.class);
+		final AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		final Intent intent = new Intent(AActEdit.this, TodayRmdrSetter.class);
+		final PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-		// set reminder
-		String actText = act.getText();
-		if (Setting.reminder_before == 0) {
-			actText = "Time for " + actText + ".";
-		} else if (Setting.reminder_before == 1) {
-
-			actText = actText + " in " + Setting.reminder_before + " minute.";
-
-		} else {
-
-			actText = actText + " in " + Setting.reminder_before + " minutes.";
-
-		}
-		intent.putExtra("act", actText);
-		final PendingIntent pendingIntent = PendingIntent.getBroadcast(AActEdit.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 		if (act.isRemind()) {
 
-			final Time newTime = act.getTime().getTimeBefore(Setting.reminder_before);
-			log_i("act time: " + act.getTime().toString() + ", reminder time: " + newTime.toString());
-			am.set(
-					AlarmManager.RTC_WAKEUP,
-					newTime.getTimeInLong(),
-					pendingIntent
-			);
-			showShortToast("reminder set!");
-		} else {
-			am.cancel(pendingIntent);
+			am.cancel(pi);
+			am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi);
+
 		}
+
+
 	}
 
 	@Override

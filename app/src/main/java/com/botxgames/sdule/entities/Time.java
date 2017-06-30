@@ -40,7 +40,13 @@ public class Time {
 
 			String am = (hours >= 12) ? "pm" : "am";
 
-			hours = (hours > 12) ? hours - 12 : hours;
+			if(hours > 12){
+				hours -= 12;
+			} else {
+				if(hours == 0){
+					hours = 12;
+				}
+			}
 
 			return hours + ":" + (mins < 10 ? "0" + mins : mins) + " " + am;
 
@@ -59,7 +65,14 @@ public class Time {
 
 		String am = (hours >= 12) ? "pm" : "am";
 
-		hours = (hours > 12) ? hours - 12 : hours;
+		if(hours > 12){
+			hours -= 12;
+		} else {
+			if(hours == 0){
+				hours = 12;
+			}
+		}
+//		hours = (hours > 12) ? hours - 12 : hours;
 
 		return new String[]{hours + ":" + (mins < 10 ? "0" + mins : mins), am};
 
@@ -131,8 +144,11 @@ public class Time {
 	public long getTimeInLong() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, min);
+		final int h = hour;
+		final int m = min;
+		calendar.set(Calendar.HOUR_OF_DAY, h);// 10
+		calendar.set(Calendar.MINUTE, m);// 50
+		Log.i("TAAAAAAAG", "hour: " + h + ", min: " + m);
 		calendar.set(Calendar.SECOND, 0);
 		return calendar.getTimeInMillis();
 	}

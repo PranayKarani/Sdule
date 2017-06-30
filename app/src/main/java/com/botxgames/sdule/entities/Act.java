@@ -2,6 +2,14 @@
 
 package com.botxgames.sdule.entities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import com.botxgames.sdule.Utilities.C;
+import com.botxgames.sdule.Utilities.Setting;
+import com.botxgames.sdule.Utilities.SingleReminderReciever;
+
 import java.util.Date;
 
 public class Act {
@@ -95,4 +103,26 @@ public class Act {
 	public String toString() {
 		return time + "\n" + text + "\n" + remind + "\n" + getDaysToString();
 	}
+
+	public void setReminder(Context context){
+
+		final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+		final Intent in = new Intent(context, SingleReminderReciever.class);
+
+		in.putExtra("act", C.getNoticeText(this));
+		in.putExtra("act_time", "at " + getTime().toString());
+		final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, getId(), in, PendingIntent.FLAG_ONE_SHOT);
+
+		final long rmdrTime = getTime().getTimeBefore(Setting.reminder_before).getTimeInLong();
+
+		alarmManager.cancel(pendingIntent);
+		alarmManager.setExact(
+				AlarmManager.RTC_WAKEUP,
+				rmdrTime,
+				pendingIntent
+		);
+
+	}
+
 }

@@ -14,4 +14,5 @@ public class Setting {
 	public static int theme = R.style.AppThemeWhite;
 
 	public static boolean vibrate = true;
+	public static boolean showHourGlass = true;
 }

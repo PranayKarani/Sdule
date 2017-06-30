@@ -24,7 +24,9 @@
         <activity android:name=".activities.ASettings">
         </activity>
 
-        <receiver android:name=".Utilities.AlarmReciever"/>
+        <receiver android:name=".Utilities.SingleReminderReciever" />
+        <receiver android:name=".Utilities.NextdayRmdrSetter"/>
+        <receiver android:name=".Utilities.TodayRmdrSetter"/>
 
     </application>
 

@@ -1,11 +1,12 @@
 package com.botxgames.sdule.activities;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +14,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
 import com.botxgames.sdule.R;
-import com.botxgames.sdule.Utilities.C;
-import com.botxgames.sdule.Utilities.Setting;
-import com.botxgames.sdule.Utilities.ShrPref;
-import com.botxgames.sdule.entities.Time;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.botxgames.sdule.Utilities.*;
 
 public class ASettings extends MyBaseActivity implements View.OnClickListener{
 
-	private Switch switch24, vibrateSwitch, nextdaySwitch;
+	private Switch switch24, vibrateSwitch, nextdaySwitch, hourGlassSwitch;
 	private Typeface typeface;
 	private TextView reminderValue;
 
@@ -53,6 +48,11 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		nextdaySwitch.setChecked(Setting.showTomo);
 		nextdaySwitch.setOnClickListener(this);
 		nextdaySwitch.setTypeface(typeface);
+
+		hourGlassSwitch = (Switch) findViewById(R.id.a_settings_hourglass);
+		hourGlassSwitch.setChecked(Setting.showHourGlass);
+		hourGlassSwitch.setOnClickListener(this);
+		hourGlassSwitch.setTypeface(typeface);
 
 		final TextView reminderHeader = (TextView) findViewById(R.id.a_settings_reminder_heading);
 		reminderHeader.setTypeface(typeface);
@@ -126,6 +126,7 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		ShrPref.writeData(this, C.spREMINDER, Setting.reminder_before);
 		ShrPref.writeData(this, C.spVIBRATE, Setting.vibrate);
 		ShrPref.writeData(this, C.spNEXTDAY, Setting.showTomo);
+		ShrPref.writeData(this, C.spHOURGLASS, Setting.showHourGlass);
 
 	}
 
@@ -145,6 +146,11 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 		if (v == nextdaySwitch) {
 			Setting.showTomo = !Setting.showTomo;
 			nextdaySwitch.setChecked(Setting.showTomo);
+		}
+
+		if(v == hourGlassSwitch){
+			Setting.showHourGlass = !Setting.showHourGlass;
+			hourGlassSwitch.setChecked(Setting.showHourGlass);
 		}
 
 	}
@@ -183,6 +189,23 @@ public class ASettings extends MyBaseActivity implements View.OnClickListener{
 					reminderValue.setText(getItem(position));
 					if (dialog.isShowing()) {
 						dialog.dismiss();
+
+						// update the reminder pending intents
+						final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+						final Intent intent = new Intent(ASettings.this, TodayRmdrSetter.class);
+						final PendingIntent pendingIntent = PendingIntent.getBroadcast(
+								ASettings.this,
+								0,
+								intent,
+								PendingIntent.FLAG_ONE_SHOT);
+
+						alarmManager.cancel(pendingIntent);
+						alarmManager.setExact(
+								AlarmManager.RTC_WAKEUP,
+								System.currentTimeMillis(),
+								pendingIntent
+						);
+
 					}
 				}
 			});

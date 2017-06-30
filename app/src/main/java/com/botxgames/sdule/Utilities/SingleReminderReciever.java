@@ -14,16 +14,18 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.botxgames.sdule.R;
 
-public class AlarmReciever extends BroadcastReceiver {
+public class SingleReminderReciever extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.i("tag", "Time for " + intent.getStringExtra("act"));
 
 		final String actText = intent.getStringExtra("act");
+		final String actTime = intent.getStringExtra("act_time");
 
 		NotificationCompat.Builder nb = new NotificationCompat.Builder(context)
 				.setSmallIcon(R.mipmap.ic_launcher)
-				.setContentTitle(actText);
+				.setContentTitle(actText)
+				.setContentText(actTime);
 		NotificationManager nM = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 		nM.notify(1,nb.build());
 
