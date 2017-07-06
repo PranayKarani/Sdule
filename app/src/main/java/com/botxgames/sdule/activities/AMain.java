@@ -39,7 +39,7 @@ public class AMain extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.a_main);
 
-		setTodaysReminders();
+		setNextdaysReminders();
 
 		Setting.timeFormat24 = ShrPref.readData(this, C.sp24FORMAT, false);
 		Setting.reminder_before = ShrPref.readData(this, C.spREMINDER, 0);
@@ -312,24 +312,29 @@ public class AMain extends AppCompatActivity {
 	/**
 	 * Called whenever the app is launched
 	 */
-	private void setTodaysReminders(){
+	private void setNextdaysReminders(){
 
 		final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		final Intent intent = new Intent(this, NextdayRmdrSetter.class);
 		final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 5);
+		// set reminders for a week
+		for(int i = 1; i <= 7; i++) {
 
-		alarmManager.cancel(pendingIntent);
-		alarmManager.setExact(
-				AlarmManager.RTC_WAKEUP,
-				calendar.getTimeInMillis(),
-				pendingIntent
-		);
+			final Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + i);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 5);
+
+			alarmManager.cancel(pendingIntent);
+			alarmManager.setExact(
+					AlarmManager.RTC_WAKEUP,
+					calendar.getTimeInMillis(),
+					pendingIntent
+			);
+
+		}
 
 	}
 

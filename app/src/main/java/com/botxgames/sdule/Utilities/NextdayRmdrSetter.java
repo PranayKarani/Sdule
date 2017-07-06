@@ -31,12 +31,12 @@ public class NextdayRmdrSetter extends BroadcastReceiver {
 
 		}
 
-		NotificationCompat.Builder nb = new NotificationCompat.Builder(context)
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setContentTitle("Sdule set for today")
-				.setContentText(acts.length + " activities sduled");
-		NotificationManager nM = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-		nM.notify(1, nb.build());
+//		NotificationCompat.Builder nb = new NotificationCompat.Builder(context)
+//				.setSmallIcon(R.mipmap.ic_launcher)
+//				.setContentTitle("Sdule set for today")
+//				.setContentText(acts.length + " activities sduled");
+//		NotificationManager nM = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+//		nM.notify(1, nb.build());
 
 
 	}
